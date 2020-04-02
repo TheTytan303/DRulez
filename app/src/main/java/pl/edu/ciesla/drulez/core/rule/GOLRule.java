@@ -7,13 +7,11 @@ public class GOLRule implements Rule {
 
     public GOLRule( int pureRule){
         /*
-        *
         truthTable[0] = alive -> need alive to die of overpopulation;
         truthTable[1] = alive -> need alive to die of loneliness;
         truthTable[2] = dead -> need min alive for birth;
         truthTable[3] = dead -> need max alive for birth;
-        * default new GOLRule(4,1,3,9)
-        * */
+        */
         truthTable = new int[4];
         truthTable[0] = pureRule/1000;
         pureRule = pureRule%1000;
@@ -25,14 +23,9 @@ public class GOLRule implements Rule {
     }
     public GOLRule(){
         /*
-        *
-        truthTable[0] = alive -> need alive to die of overpopulation;
-        truthTable[1] = alive -> need alive to die of loneliness;
-        truthTable[2] = dead -> need min alive for birth;
-        truthTable[3] = dead -> need max alive for birth;
-        * default new GOLRule(4,1,3,9)
-        * */
-        this(4139);
+        default new GOLRule(4,1,3,3)
+        */
+        this(4133);
     }
     @Override
     public int getNextState(Cell target) {
