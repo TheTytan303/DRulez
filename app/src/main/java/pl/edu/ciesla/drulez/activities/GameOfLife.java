@@ -38,6 +38,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import pl.edu.ciesla.drulez.R;
 import pl.edu.ciesla.drulez.View.CellViewAdapter;
@@ -56,7 +58,7 @@ public class GameOfLife extends AppCompatActivity implements StructuresAdapter.b
     int x,y, rule;
     int size;
     int delay = 1000;
-    Bitmap bmp;
+    CopyOnWriteArrayList<Bitmap> bmp;
     Map<String, int[][]> tmp;
     //Timer timer;
     Runnable task;
@@ -117,8 +119,13 @@ public class GameOfLife extends AppCompatActivity implements StructuresAdapter.b
         mainRecycler.setLayoutManager(mainRecyclerLayoutManager);
         mainRecyclerAdapter.notifyDataSetChanged();
 
+        bmp = new CopyOnWriteArrayList<>();
+
+
         ImageView iv = findViewById(R.id.agol_main_image);
-        DrawTask dt = new DrawTask(board,iv,size, bmp);
+        CopyOnWriteArrayList<ImageView> concurrentIv=new CopyOnWriteArrayList<>();
+        concurrentIv.add(iv);
+        DrawTask dt = new DrawTask(board,concurrentIv,size, bmp);
         dt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         iv.setOnTouchListener(this);
         iv.setOnDragListener(this);
@@ -161,7 +168,9 @@ public class GameOfLife extends AppCompatActivity implements StructuresAdapter.b
 
     private void nextStep(){
         ImageView iv = findViewById(R.id.agol_main_image);
-        DrawTask dt = new DrawTask(board,iv,size, bmp);
+        CopyOnWriteArrayList<ImageView> concurrentIv=new CopyOnWriteArrayList<>();
+        concurrentIv.add(iv);
+        DrawTask dt = new DrawTask(board,concurrentIv,size, bmp);
         dt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         board.nextTimeStep();
     }
@@ -179,7 +188,9 @@ public class GameOfLife extends AppCompatActivity implements StructuresAdapter.b
     @Override
     public void onBoardChanged() {
         ImageView iv = findViewById(R.id.agol_main_image);
-        DrawTask dt = new DrawTask(board,iv,size, bmp);
+        CopyOnWriteArrayList<ImageView> concurrentIv=new CopyOnWriteArrayList<>();
+        concurrentIv.add(iv);
+        DrawTask dt = new DrawTask(board,concurrentIv,size, bmp);
         dt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
     @Override
@@ -283,13 +294,13 @@ public class GameOfLife extends AppCompatActivity implements StructuresAdapter.b
     }
 
 
-    class DrawTask extends AsyncTask<Void, Bitmap,Bitmap> {
+    class DrawTask extends AsyncTask<Void, Void,CopyOnWriteArrayList<Bitmap>> {
 
-        Bitmap bmp;
-        ImageView iv;
+        CopyOnWriteArrayList<Bitmap> bmp;
+        CopyOnWriteArrayList<ImageView> iv;
         Board2D board;
         int sizeX, sizeY;
-        public DrawTask( Board2D board, ImageView iv,int size,Bitmap bmp){
+        public DrawTask( Board2D board, CopyOnWriteArrayList<ImageView> iv,int size,CopyOnWriteArrayList<Bitmap> bmp){
             this.iv = iv;
             this.bmp = bmp;
             this.board = board;
@@ -298,26 +309,29 @@ public class GameOfLife extends AppCompatActivity implements StructuresAdapter.b
         }
 
         @Override
-        protected void onProgressUpdate(Bitmap... values) {
+        protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
         }
 
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            iv.setImageBitmap(bmp);
+        protected void onPostExecute(CopyOnWriteArrayList<Bitmap> bitmap) {
+            iv.get(0).setImageBitmap(bmp.get(0));
+            //iv.invalidate();
             super.onPostExecute(bitmap);
         }
 
         @Override
-        protected Bitmap doInBackground(Void... voids) {
+        protected CopyOnWriteArrayList<Bitmap> doInBackground(Void... voids) {
             Paint black = new Paint();
             black.setColor(Color.BLACK);
             black.setStyle(Paint.Style.FILL);
             Paint white = new Paint();
             white.setColor(0x20FF00FF);
             white.setStyle(Paint.Style.FILL);
-            bmp = Bitmap.createBitmap(sizeX,sizeY, Bitmap.Config.ARGB_8888);
-            final Canvas canvas = new Canvas(bmp);
+            Bitmap tmp = Bitmap.createBitmap(sizeX,sizeY, Bitmap.Config.ARGB_8888);
+            bmp.clear();
+            bmp.add(tmp);
+            final Canvas canvas = new Canvas(bmp.get(0));
             int i=0;
             int j=0;
             //System.out.println(board);
@@ -334,7 +348,7 @@ public class GameOfLife extends AppCompatActivity implements StructuresAdapter.b
                 }
                 if(i==board.getWidth()){
                     //System.out.println("size: " +size + " | j: " + j);
-                    publishProgress(bmp);
+                    publishProgress();
                     j++;
                     i=0;
                 }

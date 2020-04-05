@@ -9,11 +9,13 @@ import pl.edu.ciesla.drulez.core.rule.Rule;
 public class Board2D {
     ArrayList<Cell> cells;
     int width, height;
+    boolean isPeriodic;
 
     public Board2D(int width, int height, boolean periodic, Rule rule){
         cells = new ArrayList<>();
         this.width = width;
         this.height = height;
+        this.isPeriodic = periodic;
         for(int i = 0; i<height;i++){
             for(int j = 0; j< width; j++){
                 cells.add(new Cell2D(rule));
