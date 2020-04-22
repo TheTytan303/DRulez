@@ -1,8 +1,6 @@
-package pl.edu.ciesla.drulez.activities;
+package pl.edu.ciesla.drulez.View.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,16 +13,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.service.autofill.VisibilitySetterAction;
 import android.text.InputType;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,16 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import pl.edu.ciesla.drulez.R;
-import pl.edu.ciesla.drulez.View.CellViewAdapter;
 import pl.edu.ciesla.drulez.View.StructuresAdapter;
-import pl.edu.ciesla.drulez.View.TouchImageView;
-import pl.edu.ciesla.drulez.core.Board.Board1D;
 import pl.edu.ciesla.drulez.core.Board.Board2D;
 import pl.edu.ciesla.drulez.core.cell.Cell;
 import pl.edu.ciesla.drulez.core.rule.GOLRule;

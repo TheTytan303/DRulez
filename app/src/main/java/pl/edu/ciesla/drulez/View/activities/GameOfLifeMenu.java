@@ -1,4 +1,4 @@
-package pl.edu.ciesla.drulez.activities;
+package pl.edu.ciesla.drulez.View.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import pl.edu.ciesla.drulez.R;
 

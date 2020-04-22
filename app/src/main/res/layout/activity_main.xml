@@ -24,6 +24,13 @@
             android:layout_height="wrap_content"
             android:onClick="gol"
             android:text="Game Of Life" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="CASetup"
+            android:text="Cellar Automata simulation" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,14 +3,31 @@ package pl.edu.ciesla.drulez.core.cell;
 import pl.edu.ciesla.drulez.core.rule.Rule;
 
 public class Cell2D implements Cell{
-    int state;
-    int nextState;
-    Rule rule;
-    Cell[] neighbours;
+    private int state;
+    private int nextState;
+    private Rule rule;
+    private Cell[] neighbours;
+    private float x, y;
     public Cell2D(Rule rule){
         this.rule = rule;
         this.state = 0;
         this.nextState = state;
+    }
+
+    public Cell2D(Rule rule, float x, float y){
+        this.x =x;
+        this.y =y;
+        this.rule = rule;
+        this.state = 0;
+        this.nextState = state;
+        //System.out.println("X: " + x + " | Y: " + y);
+    }
+
+    public float getX(){
+        return x;
+    }
+    public float getY(){
+        return y;
     }
 
     @Override

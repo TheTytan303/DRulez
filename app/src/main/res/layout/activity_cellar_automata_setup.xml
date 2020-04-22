@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/acas_main_constraint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.activities.CellarAutomataSetup">
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/acas_height"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Board Height:" />
+
+                <EditText
+                    android:id="@+id/acas_height_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:text="50" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/acas_wdidth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Board Width:" />
+
+                <EditText
+                    android:id="@+id/acas_width_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:text="50" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/acas_periodic_sw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Periodyczność" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50px" />
+
+            <RadioGroup
+                android:id="@+id/acas_grain_growth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sąsiedztwo" />
+
+                <RadioButton
+                    android:id="@+id/acas_grain_growth_Moore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Moore" />
+
+                <RadioButton
+                    android:id="@+id/acas_grain_growth_vonNeuman"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="von Neuman" />
+
+                <RadioButton
+                    android:id="@+id/acas_grain_growth_hex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Hexagonalne" />
+
+                <RadioButton
+                    android:id="@+id/acas_grain_growth_pent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pentagonalne" />
+
+                <RadioButton
+                    android:id="@+id/acas_grain_growth_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Radius" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/acas_grain_growth_details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/acas_grain_groth_details_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Typ:" />
+
+                <LinearLayout
+                    android:id="@+id/acas_grain_growth_details_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Promień: " />
+
+                    <EditText
+                        android:id="@+id/acas_grain_growth_details_radius_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="number|numberDecimal"
+                        android:text="2.5" />
+                </LinearLayout>
+
+                <RadioGroup
+                    android:id="@+id/acas_grain_growth_details_pent_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+
+                    <RadioButton
+                        android:id="@+id/acas_grain_growth_pent_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="górne" />
+
+                    <RadioButton
+                        android:id="@+id/acas_grain_growth_pent_right"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="prawe" />
+
+                    <RadioButton
+                        android:id="@+id/acas_grain_growth_pent_bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="dolne" />
+
+                    <RadioButton
+                        android:id="@+id/acas_grain_growth_pent_left"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="lewe" />
+
+                    <RadioButton
+                        android:id="@+id/acas_grain_growth_pent_random"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="losowe" />
+                </RadioGroup>
+
+                <RadioGroup
+                    android:id="@+id/acas_grain_growth_details_hex_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
+
+                    <RadioButton
+                        android:id="@+id/acas_grain_growth_details_hex_left"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="lewosokśne" />
+
+                    <RadioButton
+                        android:id="@+id/acas_grain_growth_details_hex_right"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="prawoskośne" />
+
+                    <RadioButton
+                        android:id="@+id/acas_detils_grain_growth_hex_random"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="losowe" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50px" />
+
+            <RadioGroup
+                android:id="@+id/acas_nucleation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Zarodkowanie" />
+
+                <RadioButton
+                    android:id="@+id/acas_nucleation_homogenous"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Jednorodne" />
+
+                <RadioButton
+                    android:id="@+id/acas_nucleation_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Z promieniem" />
+
+                <RadioButton
+                    android:id="@+id/acas_nucleation_random"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="losowe" />
+
+                <RadioButton
+                    android:id="@+id/acas_nucleation_banned"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Wyklinanie" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/acas_nucleation_details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/acas_nucleation_l"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/acas_nucleation_l_tv"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Promień:" />
+
+                    <EditText
+                        android:id="@+id/acas_nucleation_lvalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="number|numberDecimal"
+                        android:text="7.5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/acas_nucleation_r"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/acas_nucleation_r_tv"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        tools:text="ilość zarodków" />
+
+                    <EditText
+                        android:id="@+id/acas_nucleation_rvalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:text="16" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/acas_nucleation_v"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/acas_nucleation_v_tv"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ilość rodzajów ziaren:" />
+
+                    <EditText
+                        android:id="@+id/acas_nucleation_values"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="0" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50px" />
+
+            <Button
+                android:id="@+id/acas_continue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onContinue"
+                android:text="accept" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

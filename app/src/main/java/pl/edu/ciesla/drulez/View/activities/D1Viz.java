@@ -1,4 +1,4 @@
-package pl.edu.ciesla.drulez.activities;
+package pl.edu.ciesla.drulez.View.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
