@@ -225,6 +225,9 @@ public class CellarAutomataSetup extends AppCompatActivity implements View.OnCli
 
 
         Intent contin = new Intent(this, CellarAutomata.class);
+        if(nucleation == Board2D.Nucleation.banned){
+            contin = new Intent(this, NucleationPointActivity.class);
+        }
         contin.putExtra("nucleation",nucleation);
         contin.putExtra("periodic",periodic);
         contin.putExtra("grainGrowth",gg);

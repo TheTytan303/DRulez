@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mc_setup_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Iterations:" />
+
+        <EditText
+            android:id="@+id/mc_setup_iterations_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:text="50" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="kT:" />
+
+        <EditText
+            android:id="@+id/mc_setup_kt_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:text="0.6" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/mc_setup_periodic_sw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="Periodic" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Neighbours" />
+
+    <RadioGroup
+        android:id="@+id/mc_setup_neighbours"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RadioButton
+            android:id="@+id/mc_setup_neighbours_moore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Moore" />
+
+        <RadioButton
+            android:id="@+id/mc_setup_neighbours_vonneumann"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Von Neuman" />
+
+        <RadioButton
+            android:id="@+id/mc_setup_neighbours_hex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hexagonal" />
+
+        <RadioButton
+            android:id="@+id/mc_setup_neighbours_pent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pentagonal" />
+
+        <RadioButton
+            android:id="@+id/mc_setup_neighbours_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Radius" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_view17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Radius: " />
+
+        <EditText
+            android:id="@+id/mc_setup_radius_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:text="2.5" />
+    </LinearLayout>
+
+</LinearLayout>

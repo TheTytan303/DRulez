@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.activities.CellarAutomata"></activity>
+        <activity android:name=".View.activities.NucleationPointActivity"></activity>
+        <activity android:name=".View.activities.CellarAutomata" />
         <activity android:name=".View.activities.CellarAutomataSetup" />
         <activity android:name=".View.activities.GameOfLifeMenu" />
         <activity android:name=".View.activities.GameOfLife" />

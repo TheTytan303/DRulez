@@ -2,13 +2,17 @@ package pl.edu.ciesla.drulez.core.Board;
 
 
 import android.graphics.PointF;
+import android.util.Pair;
 
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
@@ -18,6 +22,7 @@ import java.util.concurrent.FutureTask;
 
 import pl.edu.ciesla.drulez.core.cell.Cell;
 import pl.edu.ciesla.drulez.core.cell.Cell2D;
+import pl.edu.ciesla.drulez.core.rule.MonteCarloRule;
 import pl.edu.ciesla.drulez.core.rule.Rule;
 
 public class Board2D {
@@ -33,6 +38,11 @@ public class Board2D {
     private boolean isPeriodic;
     private int values;
     private GrainGrowth growthType;
+    private Pair<Integer, Integer> energyRange;
+
+    private int[][] energy;
+    private MonteCarloRule mcRule;
+
     public enum Nucleation{
         homogeneous,
         radius,
@@ -69,8 +79,12 @@ public class Board2D {
             hexes.add(hex_left);
             return hexes.get(RANDOM.nextInt(hexes.size()));
         }
+        public static boolean randomBool(){
+            return RANDOM.nextBoolean();
+        }
 
     }
+
     public Board2D(int width, int height, boolean fullNeighbours, Rule rule){
         cells = new Vector<>(width*height);
         this.width = width;
@@ -83,7 +97,6 @@ public class Board2D {
         if(fullNeighbours)
             mooreGrowth();
     }
-
     public Board2D(int width, int height, boolean periodic, Rule rule, Nucleation nucleation, float lVal, int rVal, int values, GrainGrowth grainGrowth){
         this(width,height,periodic,rule,nucleation,lVal,rVal,values,grainGrowth,0.0f);
     }
@@ -98,7 +111,127 @@ public class Board2D {
         this.values = values;
         this.growthType = grainGrowth;
         activeCells = new HashSet<>();
-        switch (grainGrowth){
+        setGrowthType(growthType,radius);
+        switch(nucleation){
+            case homogeneous:
+                homogeneousNucleation((int)lVal, rVal);
+                break;
+            case radius:
+                radiusNucleation(lVal, rVal);
+                break;
+            case banned:
+                bannedNucleation();
+                break;
+            case random:
+            default:
+                randomNucleation((int)lVal);
+        }
+        history = new ArrayList<>();
+        activeCells.remove(derp);
+
+
+    }
+
+    public void setMonteCarloRule(MonteCarloRule mcRule){
+        this.mcRule = mcRule;
+    }
+
+    public int[][] updateEnergy(){
+        int minE=1, maxE=1;
+        int[][] returnVale = new int[height][width];
+        for(int i = 0; i<height;i++){
+            for (int j=0;j<width;j++){
+                returnVale[i][j] = (int)((Cell2D)cells.get(i*width+j)).setEnergy(mcRule);//TODO int cast
+                if(returnVale[i][j] < minE){
+                    minE = returnVale[i][j];
+                }else {
+                    if(returnVale[i][j] > maxE)
+                        maxE = returnVale[i][j];
+                }
+            }
+        }
+        energyRange = new Pair<>(minE, maxE);
+        return returnVale;
+    }
+
+    public int[][] monteCarloIteration(){
+        ArrayList<Cell> copyList = new ArrayList<>(cells);
+        Collections.shuffle(copyList);
+        for(Cell c: copyList){
+            if(growthType == GrainGrowth.pent_random){
+                int x= (int)((Cell2D)c).getX();
+                int y= (int)((Cell2D)c).getY();
+                c.setNeighbours(getPentGrowthNeighbours(x,y,GrainGrowth.randomPent()));
+            }else{
+                if(growthType == GrainGrowth.hex_random) {
+                    int x = (int) ((Cell2D) c).getX();
+                    int y = (int) ((Cell2D) c).getY();
+                    c.setNeighbours(getHexGrowthNeighbours(x, y, GrainGrowth.randomBool()));
+                }
+            }
+            ((Cell2D)c).setNextState(mcRule.ifChange((Cell2D)c));
+            c.updateState();
+        }
+        updateStates();
+        energy = updateEnergy();
+        return energy;
+    }
+    public int[][] monteCarloIteration2(){
+        ArrayList<Cell> copyList = new ArrayList<>(cells);
+        Random random = new Random(System.currentTimeMillis());
+        while(copyList.size()!=0){
+            Cell2D c = (Cell2D)copyList.remove(random.nextInt(copyList.size()));
+            c.setNextState(mcRule.ifChange(c));
+            c.updateState();
+        }
+        //for (Cell c: cells){
+        //}
+        updateStates();
+        energy = updateEnergy();
+        return energy;
+    }
+    public int[][] monteCarloIteration3(){
+        for(Cell c: cells){
+            ((Cell2D)c).setNextState(mcRule.ifChange((Cell2D)c));
+            c.updateState();
+        }
+        //for (Cell c: cells){
+        //}
+        updateStates();
+        energy = updateEnergy();
+        return energy;
+    }
+    public int[][] getEnergy() {
+        if(energy == null)
+            energy = updateEnergy();
+        return energy;
+    }
+
+    public Pair<Integer, Integer> getEnergyRange() {
+        return energyRange;
+    }
+
+    public int[][] getStates() {
+        return history.get(history.size()-1);
+    }
+    public int[][] updateStates() {
+        int[][] returnVale = new int[height][width];
+        for(int i = 0; i<height;i++){
+            for (int j=0;j<width;j++){
+                returnVale[i][j] = cells.get(i*width+j).getState();
+            }
+        }
+        if(history.size() > 5){
+            history.clear();
+        }
+        history.add(returnVale);
+        return returnVale;
+    }
+
+
+    public void setGrowthType(GrainGrowth growthType, float radius) {
+        this.growthType = growthType;
+        switch (growthType){
             case hex_left:
                 hexGrowth(true);
                 break;
@@ -120,26 +253,7 @@ public class Board2D {
             default:
                 pentGrowth(growthType);
         }
-        switch(nucleation){
-            case homogeneous:
-                homogeneousNucleation((int)lVal, rVal);
-                break;
-            case radius:
-                radiusNucleation(lVal, rVal);
-                break;
-            case banned:
-                bannedNucleation();
-                break;
-            case random:
-            default:
-                randomNucleation((int)lVal);
-        }
-        history = new ArrayList<>();
-        activeCells.remove(derp);
-
-
     }
-
 
     public void setCells(int x, int y, int[][] state){
         for(int i=0; i<state[0].length;i++){
@@ -147,6 +261,9 @@ public class Board2D {
                 getCellAt(x+j, y+i).setState(state[j][i]);
             }
         }
+    }
+    public void isPeriodic(boolean isPeriodic){
+        this.isPeriodic = isPeriodic;
     }
     public void nextTimeStep(){
 
@@ -332,6 +449,11 @@ public class Board2D {
     public boolean isActive(){
         return activeCells.size() != 0;
     }
+    public void setActive(boolean active){
+        if(!active){
+            activeCells = new HashSet<>();
+        }
+    }
     @Override
     public String toString(){
         String returnVale="";
@@ -409,7 +531,7 @@ public class Board2D {
         }
     };
     private void radiusGrowth(float radius){
-        int intRadius = (int)radius +1;
+        int intRadius = (int)radius+1;
         for(int i = 0; i<height ;i++){
             for(int j = 0; j< width ; j++){
                 List<Cell> neighbours = new LinkedList<>();
@@ -420,22 +542,13 @@ public class Board2D {
                         float potentialX = potentialNeighbour.getX();
                         float potentialY = potentialNeighbour.getY();
                         if(isPeriodic){
-                            if(l < 0){
-                                potentialX -=width;
-                            }
-                            if(l >= width){
-                                potentialX +=width;
-                            }
-                            if(k < 0){
-                                potentialY -=height;
-                            }
-                            if(k >= height){
-                                potentialY +=height;
-                            }
+                            if(l < 0) potentialX -=width;
+                            if(l >= width) potentialX +=width;
+                            if(k < 0)  potentialY -=height;
+                            if(k >= height) potentialY +=height;
                         }
                         if( getDistance(target.getX(), target.getY(),potentialX , potentialY ) <= radius){
                             neighbours.add(potentialNeighbour);
-                            continue;
                         }
                     }
                 }
@@ -444,10 +557,12 @@ public class Board2D {
                 target.setNeighbours(tmp);
             }
         }
-    };
+    }
+
     //DONE radius periodic
-
-
+    public void activeAll(){
+        this.activeCells.addAll(cells);
+    }
     private Cell[] getHexGrowthNeighbours(int j, int i, boolean left){
         if (left){
             return new Cell[]{
@@ -515,7 +630,7 @@ public class Board2D {
         int gapY = height/y;
         List<Integer> tmp = new LinkedList<>();
         if(values == 0) values = x*y;
-        for(int i=0;i<values;i++){
+        for(int i=1;i<values+1;i++){
             tmp.add(i);
         }
         Random random = new Random(System.currentTimeMillis());
@@ -527,8 +642,23 @@ public class Board2D {
                 }else {
                     state=random.nextInt(values);
                 }
-                getCellAt(i*gapX,j*gapY).setState(state);
-                activeCells.addAll(Arrays.asList(getCellAt(x,y).getNeighbours()));
+                Cell2D target =  (Cell2D)getCellAt(i*gapX,j*gapY);
+                target.setState(state);
+                switch(growthType){
+                    case pent_random:
+                    case pent_bottom:
+                    case pent_left:
+                    case pent_right:
+                    case pent_top:
+                        //getCellAt((int)x,(int)y).setNeighbours(getPentGrowthNeighbours((int)x,(int)y, growthType));
+                        //break;
+                    case hex_random:
+                        //getCellAt((int)x,(int)y).setNeighbours(getHexGrowthNeighbours((int)x,(int)y,random.nextBoolean()));
+                        activeCells.addAll(getMooreNeighbours((int)target.getY(),(int)target.getX()));
+                        break;
+                    default:
+                        activeCells.addAll(Arrays.asList(getCellAt((int)target.getX(),(int)target.getY()).getNeighbours()));
+                }
             }
         }
     }
@@ -537,7 +667,7 @@ public class Board2D {
         List<Integer> tmp = new LinkedList<>();
         List<PointF> randed = new ArrayList<>();
         if(values == 0) values = number;
-        for(int i=0;i<values;i++){
+        for(int i=1;i<values+1;i++){
             tmp.add(i);
         }
         outerFor:
@@ -559,15 +689,17 @@ public class Board2D {
             getCellAt((int)x,(int)y).setState(state);
             switch(growthType){
                 case pent_random:
-                    getCellAt((int)x,(int)y).setNeighbours(getPentGrowthNeighbours((int)x,(int)y, growthType));
-                    break;
+                case pent_bottom:
+                case pent_left:
+                case pent_right:
+                case pent_top:
                 case hex_random:
-                    getCellAt((int)x,(int)y).setNeighbours(getHexGrowthNeighbours((int)x,(int)y,random.nextBoolean()));
+                    activeCells.addAll(getMooreNeighbours((int)y,(int)x));
                     break;
                 default:
-
+                    activeCells.addAll(Arrays.asList(getCellAt((int)x,(int)y).getNeighbours()));
             }
-            activeCells.addAll(Arrays.asList(getCellAt((int)x,(int)y).getNeighbours()));
+            //activeCells.addAll(Arrays.asList(getCellAt((int)x,(int)y).getNeighbours()));
             randed.add(new PointF(x,y));
         }
     }
@@ -575,7 +707,7 @@ public class Board2D {
         Random random = new Random(System.currentTimeMillis());
         List<Integer> tmp = new LinkedList<>();
         if(values == 0) values = number;
-        for(int i=0;i<values;i++){
+        for(int i=1;i<values+1;i++){
             tmp.add(i);
         }
         for(int i=0;i<number;i++){
@@ -588,21 +720,33 @@ public class Board2D {
                 }else {
                     state=random.nextInt(values);
                 }
-                getCellAt(x,y).setState(state);
-                activeCells.addAll(Arrays.asList(getCellAt(x,y).getNeighbours()));
+                getCellAt(x,y).setState(state); switch(growthType){
+                    case pent_random:
+                    case pent_bottom:
+                    case pent_left:
+                    case pent_right:
+                    case pent_top:
+                        //getCellAt((int)x,(int)y).setNeighbours(getPentGrowthNeighbours((int)x,(int)y, growthType));
+                        //break;
+                    case hex_random:
+                        //getCellAt((int)x,(int)y).setNeighbours(getHexGrowthNeighbours((int)x,(int)y,random.nextBoolean()));
+                        activeCells.addAll(getMooreNeighbours((int)y,(int)x));
+                        break;
+                    default:
+                        activeCells.addAll(Arrays.asList(getCellAt((int)x,(int)y).getNeighbours()));
+                }
             }else{
                 i--;
             }
         }
     }
     private void bannedNucleation(){
-        //TODO
-    }//TODO banned nucleation
+
+    }
 
     private float getDistance(float x1, float y1, float x2, float y2){
         return (float)Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
     }
-
     private class CellCalculator implements Callable<Set<Cell>> {
         List<Cell> myCells;
 
@@ -636,6 +780,7 @@ public class Board2D {
             }
             for(Cell c: myCells){
                 c.nextState();
+                 if(((Cell2D)c).getNextState() == 0) continue;
                 switch (growthType){
                     case pent_top:
                     case pent_bottom:

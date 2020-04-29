@@ -1,5 +1,6 @@
 package pl.edu.ciesla.drulez.core.cell;
 
+import pl.edu.ciesla.drulez.core.rule.MonteCarloRule;
 import pl.edu.ciesla.drulez.core.rule.Rule;
 
 public class Cell2D implements Cell{
@@ -8,6 +9,7 @@ public class Cell2D implements Cell{
     private Rule rule;
     private Cell[] neighbours;
     private float x, y;
+    private float energy;
     public Cell2D(Rule rule){
         this.rule = rule;
         this.state = 0;
@@ -28,6 +30,24 @@ public class Cell2D implements Cell{
     }
     public float getY(){
         return y;
+    }
+    public int getNextState() {
+        return this.nextState;
+    }
+
+    public float getEnergy() {
+        return energy;
+    }
+    public void setEnergy(float energy) {
+        this.energy = energy;
+    }
+    public float setEnergy(MonteCarloRule rule){
+        this.energy = rule.getEnergyOf(this);
+        return this.energy;
+    }
+
+    public void setNextState(int nextState) {
+        this.nextState = nextState;
     }
 
     @Override

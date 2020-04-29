@@ -9,8 +9,6 @@ import pl.edu.ciesla.drulez.core.Board.Board2D;
 import pl.edu.ciesla.drulez.core.cell.Cell;
 
 public class CARule implements Rule {
-
-
     Board2D.GrainGrowth growthType;
     private static CARule instance = new CARule();
     private CARule(){};
